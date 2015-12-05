@@ -1,0 +1,29 @@
+{
+  "variables": {
+    "account_file": "",
+    "project_id": ""
+  },
+  "builders": [{
+    "type": "googlecompute",
+    "account_file": "{{user `account_file`}}",
+    "project_id": "{{user `project_id`}}",
+    "source_image": "debian-8-jessie-v20151104",
+    "zone": "asia-east1-a",
+    "machine_type": "f1-micro",
+    "image_name": "jessie-base"
+  }],
+  "provisioners":[{
+    "type": "shell",
+    "inline": [
+      "apt-get update",
+      "apt-get install -y --no-install-recommends etckeeper",
+      "echo 'Asia/Tokyo' > /etc/timezone",
+      "dpkg-reconfigure -f noninteractive tzdata",
+      "etckeeper commit 'setup timezone'",
+      "apt-get upgrade -y --no-install-recommends --auto-remove --purge"
+    ],
+    "environment_vars": [
+      "DEBIAN_FRONTEND=noninteractive"
+    ]
+  }]
+}
